@@ -1,37 +1,50 @@
+package origami;
 
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.imgcodecs.Imgcodecs;
-import javax.imageio.ImageIO;
+
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Logger;
 
+import static org.opencv.imgcodecs.Imgcodecs.imencode;
+
+/**
+ *
+ */
 public class HttpStreamServer implements Runnable {
 
-
-    private BufferedImage img = null;
+    private BufferedImage img;
     private ServerSocket serverSocket;
     private Socket socket;
     private final String boundary = "stream";
     private OutputStream outputStream;
     public Mat imag;
+    int port = 8080;
+
 
     public HttpStreamServer(Mat imagFr) {
         this.imag = imagFr;
     }
 
-
     public void startStreamingServer() throws IOException {
-        serverSocket = new ServerSocket(8080);
+//        InetAddress address = InetAddress.getByAddress("0.0.0.0".getBytes());
+//        serverSocket = new ServerSocket(8080, 10, address);
+        serverSocket = new ServerSocket(port);
         socket = serverSocket.accept();
-        writeHeader(socket.getOutputStream(), boundary);
+        writeHeader(socket.getOutputStream());
     }
 
-    private void writeHeader(OutputStream stream, String boundary) throws IOException {
-        stream.write(("HTTP/1.0 200 OK\r\n" +
+    private void writeHeader(OutputStream stream) throws IOException {
+        stream.write(headers().getBytes());
+        stream.flush();
+    }
+
+    private String headers() {
+        return "HTTP/1.0 200 OK\r\n" +
                 "Connection: close\r\n" +
                 "Max-Age: 0\r\n" +
                 "Expires: 0\r\n" +
@@ -40,7 +53,7 @@ public class HttpStreamServer implements Runnable {
                 "Content-Type: multipart/x-mixed-replace; " +
                 "boundary=" + boundary + "\r\n" +
                 "\r\n" +
-                "--" + boundary + "\r\n").getBytes());
+                "--" + boundary + "\r\n";
     }
 
     public void pushImage(Mat frame) throws IOException {
@@ -48,10 +61,10 @@ public class HttpStreamServer implements Runnable {
             return;
         try {
             outputStream = socket.getOutputStream();
-            BufferedImage img = Mat2bufferedImage(frame);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(img, "jpg", baos);
-            byte[] imageBytes = baos.toByteArray();
+            MatOfByte matOfByte = new MatOfByte();
+            imencode(".jpg", frame, matOfByte);
+            byte[] imageBytes = matOfByte.toArray();
+
             outputStream.write(("Content-type: image/jpeg\r\n" +
                     "Content-Length: " + imageBytes.length + "\r\n" +
                     "\r\n").getBytes());
@@ -59,10 +72,9 @@ public class HttpStreamServer implements Runnable {
             outputStream.write(("\r\n--" + boundary + "\r\n").getBytes());
         } catch (Exception ex) {
             socket = serverSocket.accept();
-            writeHeader(socket.getOutputStream(), boundary);
+            writeHeader(socket.getOutputStream());
         }
     }
-
 
     public void run() {
         try {
@@ -81,15 +93,5 @@ public class HttpStreamServer implements Runnable {
     public void stopStreamingServer() throws IOException {
         socket.close();
         serverSocket.close();
-    }
-    
-    public static BufferedImage Mat2bufferedImage(Mat image) throws IOException {
-        MatOfByte bytemat = new MatOfByte();
-        Imgcodecs.imencode(".jpg", image, bytemat);
-        byte[] bytes = bytemat.toArray();
-        InputStream in = new ByteArrayInputStream(bytes);
-        BufferedImage img = null;
-        img = ImageIO.read(in);
-        return img;
     }
 }
