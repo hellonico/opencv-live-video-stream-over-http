@@ -28,7 +28,7 @@ public class CameraStream {
             if (!videoCapture.read(frame)) {
                 tmrVideoProcess.stop();
             }
-            httpStreamService.imag = frame;
+            httpStreamService.pushImage(frame);
         });
         tmrVideoProcess.start();
     }

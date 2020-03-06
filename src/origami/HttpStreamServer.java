@@ -4,11 +4,16 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.opencv.imgcodecs.Imgcodecs.imencode;
 
@@ -19,11 +24,11 @@ public class HttpStreamServer implements Runnable {
 
     private BufferedImage img;
     private ServerSocket serverSocket;
-    private Socket socket;
-    private final String boundary = "stream";
+
+
     private OutputStream outputStream;
     public Mat imag;
-    int port = 8080;
+    int port = 8180;
 
 
     public HttpStreamServer(Mat imagFr) {
@@ -31,11 +36,84 @@ public class HttpStreamServer implements Runnable {
     }
 
     public void startStreamingServer() throws IOException {
-//        InetAddress address = InetAddress.getByAddress("0.0.0.0".getBytes());
-//        serverSocket = new ServerSocket(8080, 10, address);
-        serverSocket = new ServerSocket(port);
-        socket = serverSocket.accept();
-        writeHeader(socket.getOutputStream());
+        serverSocket = new ServerSocket();
+        serverSocket.bind(new InetSocketAddress("0.0.0.0", port));
+        while (true) {
+            Socket socket = serverSocket.accept();
+            new Handler(socket).start();
+        }
+
+    }
+
+    class Handler extends Thread {
+        private Socket socket;
+
+        public Handler(Socket _sock) {
+            this.socket = _sock;
+        }
+
+        OutputStream outputStream;
+
+        public void run() {
+            try {
+                outputStream = socket.getOutputStream();
+                Filter f = parseFilter();
+//                System.out.println(f.get)
+                writeHeader(outputStream);
+                while (true) {
+                    byte[] imageBytes = matToBytes(f.apply(frame));
+                    if (imageBytes != null) {
+                        outputStream.write(("Content-type: image/jpeg\r\n" +
+                                "Content-Length: " + imageBytes.length + "\r\n" +
+                                "\r\n").getBytes());
+                        outputStream.write(imageBytes);
+                        outputStream.write(("\r\n--" + boundary + "\r\n").getBytes());
+                    }
+
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                try {
+                    outputStream = socket.getOutputStream();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } finally {
+//                try {
+//                    socket.close();
+//                } catch (IOException e) {
+//                    // e.printStackTrace();
+//                }
+            }
+
+        }
+
+        private Filter parseFilter() {
+            byte[] b = new byte[4096];
+            try {
+                socket.getInputStream().read(b);
+                List<String> headers = Arrays.asList(new String(b).split("\n"));
+                String get = headers.stream().filter(e -> e.contains("GET")).collect(Collectors.toList()).get(0);
+                String query = get.split(" ")[1];
+                String filter = query.split("=")[1];
+                String result = java.net.URLDecoder.decode(filter, StandardCharsets.UTF_8.name());
+                System.out.println(result);
+                File f = new File(result);
+                if (f.exists()) {
+                    Filter _f = Origami.StringToFilter(f);
+                    return _f;
+                } else {
+                    Filter _f = Origami.StringToFilter(result);
+                    return _f;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Filter f = mat -> mat;
+                return f;
+            }
+        }
+
     }
 
     private void writeHeader(OutputStream stream) throws IOException {
@@ -43,7 +121,13 @@ public class HttpStreamServer implements Runnable {
         stream.flush();
     }
 
-    private String headers() {
+    static String boundary = "stream";
+
+    static String headers() {
+        return headers(boundary);
+    }
+
+    static String headers(String boundary) {
         return "HTTP/1.0 200 OK\r\n" +
                 "Connection: close\r\n" +
                 "Max-Age: 0\r\n" +
@@ -56,31 +140,23 @@ public class HttpStreamServer implements Runnable {
                 "--" + boundary + "\r\n";
     }
 
-    public void pushImage(Mat frame) throws IOException {
-        if (frame == null)
-            return;
-        try {
-            outputStream = socket.getOutputStream();
-            MatOfByte matOfByte = new MatOfByte();
-            imencode(".jpg", frame, matOfByte);
-            byte[] imageBytes = matOfByte.toArray();
+    //    private byte[] imageBytes = null;
+    private Mat frame;
 
-            outputStream.write(("Content-type: image/jpeg\r\n" +
-                    "Content-Length: " + imageBytes.length + "\r\n" +
-                    "\r\n").getBytes());
-            outputStream.write(imageBytes);
-            outputStream.write(("\r\n--" + boundary + "\r\n").getBytes());
-        } catch (Exception ex) {
-            socket = serverSocket.accept();
-            writeHeader(socket.getOutputStream());
-        }
+    public void pushImage(Mat frame) {
+        this.frame = frame;
+    }
+
+    private byte[] matToBytes(Mat frame) {
+        MatOfByte matOfByte = new MatOfByte();
+        imencode(".jpg", frame, matOfByte);
+        return matOfByte.toArray();
     }
 
     public void run() {
         try {
             System.out.print("go to  http://localhost:8080 with browser");
             startStreamingServer();
-
             while (true) {
                 pushImage(imag);
             }
@@ -91,7 +167,6 @@ public class HttpStreamServer implements Runnable {
     }
 
     public void stopStreamingServer() throws IOException {
-        socket.close();
         serverSocket.close();
     }
 }
