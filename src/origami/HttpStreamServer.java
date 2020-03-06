@@ -1,9 +1,8 @@
 package origami;
 
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
+import origami.utils.FileWatcher;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,21 +14,34 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.opencv.imgcodecs.Imgcodecs.imencode;
-
 /**
  *
  */
 public class HttpStreamServer implements Runnable {
 
-    private BufferedImage img;
+    final private static String boundary = "stream";
+    final private static String headers() {
+        return headers(boundary);
+    }
+    final private static String headers(String boundary) {
+        return "HTTP/1.0 200 OK\r\n" +
+                "Connection: close\r\n" +
+                "Max-Age: 0\r\n" +
+                "Expires: 0\r\n" +
+                "Cache-Control: no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0\r\n" +
+                "Pragma: no-cache\r\n" +
+                "Content-Type: multipart/x-mixed-replace; " +
+                "boundary=" + boundary + "\r\n" +
+                "\r\n" +
+                "--" + boundary + "\r\n";
+    }
+
+    private Mat frame;
     private ServerSocket serverSocket;
-
-
     private OutputStream outputStream;
-    public Mat imag;
+    private Mat imag;
     int port = 8180;
-
+    String hostname = "0.0.0.0";
 
     public HttpStreamServer(Mat imagFr) {
         this.imag = imagFr;
@@ -37,7 +49,7 @@ public class HttpStreamServer implements Runnable {
 
     public void startStreamingServer() throws IOException {
         serverSocket = new ServerSocket();
-        serverSocket.bind(new InetSocketAddress("0.0.0.0", port));
+        serverSocket.bind(new InetSocketAddress(hostname, port));
         while (true) {
             Socket socket = serverSocket.accept();
             new Handler(socket).start();
@@ -47,21 +59,22 @@ public class HttpStreamServer implements Runnable {
 
     class Handler extends Thread {
         private Socket socket;
+        private MyWatcher myWatcher;
 
         public Handler(Socket _sock) {
             this.socket = _sock;
         }
 
         OutputStream outputStream;
+        Filter streamVideoFilter;
 
         public void run() {
             try {
                 outputStream = socket.getOutputStream();
-                Filter f = parseFilter();
-//                System.out.println(f.get)
+                streamVideoFilter = parseFilter();
                 writeHeader(outputStream);
                 while (true) {
-                    byte[] imageBytes = matToBytes(f.apply(frame));
+                    byte[] imageBytes = Origami.matToBytes(streamVideoFilter.apply(frame));
                     if (imageBytes != null) {
                         outputStream.write(("Content-type: image/jpeg\r\n" +
                                 "Content-Length: " + imageBytes.length + "\r\n" +
@@ -80,11 +93,11 @@ public class HttpStreamServer implements Runnable {
                     ex.printStackTrace();
                 }
             } finally {
-//                try {
-//                    socket.close();
-//                } catch (IOException e) {
-//                    // e.printStackTrace();
-//                }
+                try {
+                    socket.close();
+                } catch (IOException e) {
+                    // e.printStackTrace();
+                }
             }
 
         }
@@ -98,10 +111,11 @@ public class HttpStreamServer implements Runnable {
                 String query = get.split(" ")[1];
                 String filter = query.split("=")[1];
                 String result = java.net.URLDecoder.decode(filter, StandardCharsets.UTF_8.name());
-                System.out.println(result);
                 File f = new File(result);
                 if (f.exists()) {
                     Filter _f = Origami.StringToFilter(f);
+                    myWatcher = new MyWatcher(f);
+                    myWatcher.start();
                     return _f;
                 } else {
                     Filter _f = Origami.StringToFilter(result);
@@ -114,6 +128,19 @@ public class HttpStreamServer implements Runnable {
             }
         }
 
+        class MyWatcher extends FileWatcher {
+
+            public MyWatcher(File file) {
+                super(file);
+            }
+
+            @Override
+            public void doOnChange() {
+                streamVideoFilter = Origami.StringToFilter(this.file);
+            }
+        }
+
+
     }
 
     private void writeHeader(OutputStream stream) throws IOException {
@@ -121,41 +148,14 @@ public class HttpStreamServer implements Runnable {
         stream.flush();
     }
 
-    static String boundary = "stream";
-
-    static String headers() {
-        return headers(boundary);
-    }
-
-    static String headers(String boundary) {
-        return "HTTP/1.0 200 OK\r\n" +
-                "Connection: close\r\n" +
-                "Max-Age: 0\r\n" +
-                "Expires: 0\r\n" +
-                "Cache-Control: no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0\r\n" +
-                "Pragma: no-cache\r\n" +
-                "Content-Type: multipart/x-mixed-replace; " +
-                "boundary=" + boundary + "\r\n" +
-                "\r\n" +
-                "--" + boundary + "\r\n";
-    }
-
-    //    private byte[] imageBytes = null;
-    private Mat frame;
 
     public void pushImage(Mat frame) {
         this.frame = frame;
     }
 
-    private byte[] matToBytes(Mat frame) {
-        MatOfByte matOfByte = new MatOfByte();
-        imencode(".jpg", frame, matOfByte);
-        return matOfByte.toArray();
-    }
-
     public void run() {
         try {
-            System.out.print("go to  http://localhost:8080 with browser");
+            System.out.print("go to  http://" + hostname + ":" + port + " with browser");
             startStreamingServer();
             while (true) {
                 pushImage(imag);

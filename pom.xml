@@ -159,7 +159,7 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>origami</artifactId>
-            <version>4.2.0-4</version>
+            <version>4.2.0-6</version>
         </dependency>
         <dependency>
             <groupId>org.clojure</groupId>
@@ -169,7 +169,7 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>filters</artifactId>
-            <version>1.9-SNAPSHOT</version>
+            <version>1.9</version>
         </dependency>
     </dependencies>
 </project>
