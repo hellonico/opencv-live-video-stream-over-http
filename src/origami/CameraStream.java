@@ -14,8 +14,7 @@ public class CameraStream {
     static Timer tmrVideoProcess;
 
     public static void start() {
-        videoCapture = new VideoCapture();
-        videoCapture.open(0);
+        videoCapture = Origami.CaptureDevice("cam.edn");
         if (!videoCapture.isOpened()) {
             return;
         }
