@@ -1,3 +1,9 @@
 .idea/
 http-stream.iml
 target/
+.DS_Store
+.classpath
+.project
+.settings/
+dependency-reduced-pom.xml
+.vscode/

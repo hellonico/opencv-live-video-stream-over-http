@@ -1,0 +1,3 @@
+[{:class origami.filters.Resize :factor 0.3}
+ {:class origami.filters.MyYolo$V3}
+ {:class origami.filters.FPS}]

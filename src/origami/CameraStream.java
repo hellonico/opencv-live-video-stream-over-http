@@ -18,12 +18,11 @@ public class CameraStream {
         if (!videoCapture.isOpened()) {
             return;
         }
-
         frame = new Mat();
         httpStreamService = new HttpStreamServer(frame);
         new Thread(httpStreamService).start();
 
-        tmrVideoProcess = new Timer(100, e -> {
+        tmrVideoProcess = new Timer(10, e -> {
             if (!videoCapture.read(frame)) {
                 tmrVideoProcess.stop();
             }

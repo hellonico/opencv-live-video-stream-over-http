@@ -87,14 +87,15 @@ public class HttpStreamServer implements Runnable {
 
             } catch (IOException e) {
                 e.printStackTrace();
-                try {
-                    outputStream = socket.getOutputStream();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+//                try {
+//                    outputStream = socket.getOutputStream();
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
             } finally {
                 try {
                     socket.close();
+                    System.out.println("Thread finishing ...");
                 } catch (IOException e) {
                     // e.printStackTrace();
                 }
@@ -111,6 +112,7 @@ public class HttpStreamServer implements Runnable {
                 String query = get.split(" ")[1];
                 String filter = query.split("=")[1];
                 String result = java.net.URLDecoder.decode(filter, StandardCharsets.UTF_8.name());
+                System.out.println(result);
                 File f = new File(result);
                 if (f.exists()) {
                     Filter _f = Origami.StringToFilter(f);
@@ -118,9 +120,9 @@ public class HttpStreamServer implements Runnable {
                     myWatcher.start();
                     return _f;
                 } else {
-                    Filter _f = Origami.StringToFilter(result);
-                    return _f;
+                    return Origami.StringToFilter(result);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 Filter f = mat -> mat;
