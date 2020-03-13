@@ -5,6 +5,11 @@ import org.opencv.videoio.VideoCapture;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 public class CameraStream {
 
@@ -13,13 +18,13 @@ public class CameraStream {
     static VideoCapture videoCapture;
     static Timer tmrVideoProcess;
 
-    public static void start() {
-        videoCapture = Origami.CaptureDevice("cam.edn");
+    public static void start(String host, String port, String camFile) {
+        videoCapture = Origami.CaptureDevice(camFile);
         if (!videoCapture.isOpened()) {
             return;
         }
         frame = new Mat();
-        httpStreamService = new HttpStreamServer(frame);
+        httpStreamService = new HttpStreamServer(host, port, frame);
         new Thread(httpStreamService).start();
 
         tmrVideoProcess = new Timer(10, e -> {
@@ -31,9 +36,16 @@ public class CameraStream {
         tmrVideoProcess.start();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Origami.init();
-        start();
+        String hostname = args.length>0 ? args[0] : "0.0.0.0";
+        String port = args.length>1 ? args[1] : "8180";
+        String camFile = args.length >2?args[2]: "cam.edn";
+
+        String text = new String(Files.readAllBytes(Paths.get(camFile)), StandardCharsets.UTF_8);
+        System.out.println(String.format("Using:\n > Bind: %s\n > Port: %s\n > Camera: %s", hostname, port, text));
+
+        start(hostname, port, camFile);
     }
 
 }

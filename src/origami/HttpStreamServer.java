@@ -43,8 +43,10 @@ public class HttpStreamServer implements Runnable {
     int port = 8180;
     String hostname = "0.0.0.0";
 
-    public HttpStreamServer(Mat imagFr) {
+    public HttpStreamServer(String hostname, String port, Mat imagFr) {
         this.imag = imagFr;
+        this.port = Integer.parseInt(port);
+        this.hostname = hostname;
     }
 
     public void startStreamingServer() throws IOException {
