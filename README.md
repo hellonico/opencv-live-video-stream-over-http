@@ -1,19 +1,12 @@
 # Video Streaming to browser
 
-Direct Access
+Direct Access to the stream http://0.0.0.0:8180
 
-<video controls width="250">
-    <source src="doc/origamiweb0.mpeg"/>
-    Sorry, your browser doesn't support embedded videos.
-</video>
+<img src="doc/origamiweb0.gif"/>
 
-Using the React Client
+Using the Sample React Client
 
-<video controls width="250">
-    <source src="doc/origamiweb.mpeg"/>
-    Sorry, your browser doesn't support embedded videos.
-</video>
-
+<img src="doc/origamiweb.gif"/>
 
 Starts the streaming server
 ```
