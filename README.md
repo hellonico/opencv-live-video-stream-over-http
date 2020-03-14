@@ -8,7 +8,13 @@ Using the Sample React Client
 
 <img src="doc/origamiweb.gif"/>
 
+* Top Left: MJpeg encoded Video Stream sent by the server
+* Top Right: List of Filters read from a file on the server
+* Bottom Left: FPS Filter requested  from the client
+* Bottom Right: Yolo detection requested from the client
+
 Starts the streaming server
+
 ```
  mvn compile exec:java
 ```
