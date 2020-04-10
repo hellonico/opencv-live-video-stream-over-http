@@ -1,11 +1,11 @@
-[;{:class origami.filters.Resize :factor 0.7}
-  {:class origami.filters.FPS}
+[{:class origami.filters.Resize :factor 0.3}
+  ; {:class origami.filters.FPS}
   {:class origami.filters.ClojureFilter
    :fn "(fn[mat] (org.opencv.imgproc.Imgproc/applyColorMap mat mat 3) mat)"}
   {:class origami.filters.Annotate
-   :text "I am having a second one"
+   :text "I am having a third coffee"
    :point "50,250"
-   :fontSize 1
+   :fontSize 5
    :thickness 2
    :color "90,0,0"}
   ]
