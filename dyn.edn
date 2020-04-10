@@ -1,1 +1,3 @@
-[{:class origami.filters.DynamicAnnotate :text "(java.util.Date.)"}]
+[{:class origami.filters.DynamicAnnotate :point "0,200" :text "(str (java.util.Date.))"}
+ {:class origami.filters.DynamicAnnotate :point "0,100" :text "(str \"OpenCV \" (org.opencv.core.Core/VERSION))"}
+ ]
