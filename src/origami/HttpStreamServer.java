@@ -104,6 +104,7 @@ public class HttpStreamServer implements Runnable {
             }
 
         }
+        final Filter PASSTHROUGH_FILTER = mat -> mat;
 
         private Filter parseFilter() {
             byte[] b = new byte[4096];
@@ -112,7 +113,12 @@ public class HttpStreamServer implements Runnable {
                 List<String> headers = Arrays.asList(new String(b).split("\n"));
                 String get = headers.stream().filter(e -> e.contains("GET")).collect(Collectors.toList()).get(0);
                 String query = get.split(" ")[1];
-                String filter = query.split("=")[1];
+                String[] splits = query.split("=");
+                if(splits.length==0) {
+                    System.out.println("No filter requested");
+                    return PASSTHROUGH_FILTER;
+                }
+                String filter = splits[1];
                 String result = java.net.URLDecoder.decode(filter, StandardCharsets.UTF_8.name());
                 System.out.println(result);
                 File f = new File(result);
@@ -127,8 +133,7 @@ public class HttpStreamServer implements Runnable {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Filter f = mat -> mat;
-                return f;
+                return PASSTHROUGH_FILTER;
             }
         }
 

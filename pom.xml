@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>origami</groupId>
-    <artifactId>http-stream</artifactId>
+    <artifactId>streamer</artifactId>
     <packaging>jar</packaging>
-    <version>0.1</version>
+    <version>0.5</version>
     <description>Created with leiningen</description>
     <url>http://example.com/FIXME</url>
     <properties>
@@ -19,6 +19,15 @@
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
         </license>
     </licenses>
+
+
+  <distributionManagement>
+    <repository>
+      <id>vendredi</id>
+      <name>vendredi</name>
+      <url>https://repository.hellonico.info/repository/hellonico/</url>
+    </repository>
+  </distributionManagement>
 
     <build>
         <sourceDirectory>src</sourceDirectory>
@@ -135,7 +144,7 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>origami</artifactId>
-            <version>4.3.0-0</version>
+            <version>4.5.1-2</version>
         </dependency>
         <dependency>
             <groupId>org.clojure</groupId>
@@ -145,7 +154,7 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>filters</artifactId>
-            <version>1.11</version>
+            <version>1.15</version>
         </dependency>
     </dependencies>
 </project>

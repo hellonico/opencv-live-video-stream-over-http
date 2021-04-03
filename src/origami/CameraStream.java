@@ -3,13 +3,10 @@ package origami;
 import org.opencv.core.*;
 import org.opencv.videoio.VideoCapture;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 
 public class CameraStream {
 
@@ -40,10 +37,10 @@ public class CameraStream {
         Origami.init();
         String hostname = args.length>0 ? args[0] : "0.0.0.0";
         String port = args.length>1 ? args[1] : "8180";
-        String camFile = args.length >2?args[2]: "cam.edn";
+        String camFile = args.length >2?args[2]: "0";
 
-        String text = new String(Files.readAllBytes(Paths.get(camFile)), StandardCharsets.UTF_8);
-        System.out.println(String.format("Using:\n > Bind: %s\n > Port: %s\n > Camera: %s", hostname, port, text));
+        // String text = new String(Files.readAllBytes(Paths.get(camFile)), StandardCharsets.UTF_8);
+        System.out.println(String.format("Using:\n > Bind: %s\n > Port: %s\n > Camera: %s", hostname, port, camFile));
 
         start(hostname, port, camFile);
     }
