@@ -7,3 +7,4 @@ target/
 .settings/
 dependency-reduced-pom.xml
 .vscode/
+streamer.iml
