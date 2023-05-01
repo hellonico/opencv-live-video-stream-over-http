@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
 public class HttpStreamServer implements Runnable {
 
     final private static String boundary = "stream";
-    final private static String headers() {
+    private static String headers() {
         return headers(boundary);
     }
-    final private static String headers(String boundary) {
+    private static String headers(String boundary) {
         return "HTTP/1.0 200 OK\r\n" +
                 "Connection: close\r\n" +
                 "Max-Age: 0\r\n" +
