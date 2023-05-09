@@ -20,9 +20,11 @@ import java.util.stream.Collectors;
 public class HttpStreamServer implements Runnable {
 
     final private static String boundary = "stream";
+
     private static String headers() {
         return headers(boundary);
     }
+
     private static String headers(String boundary) {
         return "HTTP/1.0 200 OK\r\n" +
                 "Connection: close\r\n" +
@@ -104,6 +106,7 @@ public class HttpStreamServer implements Runnable {
             }
 
         }
+
         final Filter PASSTHROUGH_FILTER = mat -> mat;
 
         private Filter parseFilter() {
@@ -113,8 +116,9 @@ public class HttpStreamServer implements Runnable {
                 List<String> headers = Arrays.asList(new String(b).split("\n"));
                 String get = headers.stream().filter(e -> e.contains("GET")).collect(Collectors.toList()).get(0);
                 String query = get.split(" ")[1];
+                System.out.println("Loading filter from:" + query);
                 String[] splits = query.split("=");
-                if(splits.length==0) {
+                if (splits.length == 0) {
                     System.out.println("No filter requested");
                     return PASSTHROUGH_FILTER;
                 }

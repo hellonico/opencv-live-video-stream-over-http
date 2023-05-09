@@ -6,7 +6,7 @@
     <groupId>origami</groupId>
     <artifactId>streamer</artifactId>
     <packaging>jar</packaging>
-    <version>4.0</version>
+    <version>0.7</version>
     <description>Created with leiningen</description>
     <url>http://example.com/FIXME</url>
     <properties>
@@ -144,7 +144,7 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>origami</artifactId>
-            <version>4.7.0-1</version>
+            <version>4.7.0-5</version>
         </dependency>
         <dependency>
             <groupId>org.clojure</groupId>
@@ -154,7 +154,7 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>filters</artifactId>
-            <version>1.30</version>
+            <version>1.32</version>
         </dependency>
     </dependencies>
 </project>

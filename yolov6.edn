@@ -1,0 +1,6 @@
+[
+ {:class origami.filters.FPS}
+ {:class origami.filters.Resize :factor 0.3}
+ {:class origami.filters.detect.yolo.MyYolo$V6N, :nmsThreshold 0.1, :scoreThreshold 0.7}
+ {:class origami.filters.DynamicAnnotate :thickness 1 :fontSize 1 :point "0,100" :text "(str \"OpenCV \" (org.opencv.core.Core/VERSION))"}
+ ]
