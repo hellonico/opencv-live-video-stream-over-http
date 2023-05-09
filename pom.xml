@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>origami</groupId>
     <artifactId>streamer</artifactId>
     <packaging>jar</packaging>
-    <version>0.7</version>
+    <version>0.8-SNAPSHOT</version>
     <description>Created with leiningen</description>
     <url>http://example.com/FIXME</url>
     <properties>
@@ -19,6 +17,10 @@
             <url>http://www.eclipse.org/legal/epl-v10.html</url>
         </license>
     </licenses>
+
+    <scm>
+        <developerConnection>scm:git:https://github.com/hellonico/opencv-live-video-stream-over-http.git</developerConnection>
+    </scm>
 
 
   <distributionManagement>
@@ -96,8 +98,7 @@
                         </goals>
                         <configuration>
                             <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>origami.CameraStream</mainClass>
                                 </transformer>
                             </transformers>
