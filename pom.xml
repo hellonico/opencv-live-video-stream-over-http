@@ -4,7 +4,7 @@
     <groupId>origami</groupId>
     <artifactId>streamer</artifactId>
     <packaging>jar</packaging>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.9</version>
     <description>Created with leiningen</description>
     <url>http://example.com/FIXME</url>
     <properties>
@@ -20,7 +20,8 @@
 
     <scm>
         <developerConnection>scm:git:https://github.com/hellonico/opencv-live-video-stream-over-http.git</developerConnection>
-    </scm>
+      <tag>0.9</tag>
+  </scm>
 
 
   <distributionManagement>
