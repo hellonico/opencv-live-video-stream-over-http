@@ -19,7 +19,7 @@
     </licenses>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/hellonico/opencv-live-video-stream-over-http.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:hellonico/opencv-live-video-stream-over-http.git</developerConnection>
       <tag>0.9</tag>
   </scm>
 
