@@ -43,6 +43,7 @@ public class CameraStream {
         System.out.println(String.format("Using:\n > Bind: %s\n > Port: %s\n > Camera: %s", hostname, port, camFile));
 
         start(hostname, port, camFile);
+        Thread.currentThread().join();
     }
 
 }
