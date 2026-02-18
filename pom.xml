@@ -8,8 +8,8 @@
     <description>Created with leiningen</description>
     <url>http://example.com/FIXME</url>
     <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
     </properties>
     <licenses>
         <license>
@@ -146,17 +146,17 @@
         <dependency>
             <groupId>origami</groupId>
             <artifactId>origami</artifactId>
-            <version>4.7.0-5</version>
+            <version>4.13.0-2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.clojure</groupId>
             <artifactId>clojure</artifactId>
-            <version>1.10.1</version>
+            <version>1.11.3</version>
         </dependency>
         <dependency>
             <groupId>origami</groupId>
             <artifactId>filters</artifactId>
-            <version>1.32</version>
+            <version>1.48</version>
         </dependency>
     </dependencies>
 </project>
