@@ -36,7 +36,7 @@ public class CameraStream {
     public static void main(String[] args) throws Exception {
         Origami.init();
         String hostname = args.length>0 ? args[0] : "0.0.0.0";
-        String port = args.length>1 ? args[1] : "8180";
+        String port = args.length>1 ? args[1] : "8090";
         String camFile = args.length >2?args[2]: "0";
 
         // String text = new String(Files.readAllBytes(Paths.get(camFile)), StandardCharsets.UTF_8);
