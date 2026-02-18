@@ -1,47 +1,47 @@
 <html>
-  <head>
-    <title>Pi Video Surveillance</title>
-  </head>
-  <body>
-    <h1>Pi Video Surveillance</h1>
-    <img id="imageSrc" width="260"  height="140" src="http://172.16.3.3:8080/">
-     <canvas id="canvasOutput" ></canvas>
-     <p id="status">loading...</p>
-  </body>
 
-  <script type="text/javascript">
+<head>
+  <title>Pi Video Surveillance</title>
+</head>
 
-// let inputElement = document.getElementById('fileInput');
-// inputElement.addEventListener('change', (e) => {
-//   imgElement.src = URL.createObjectURL(e.target.files[0]);
-// }, false);
-// imgElement.onload = function() {
-//   let mat = cv.imread(imgElement);
-//   cv.imshow('canvasOutput', mat);
-//   mat.delete();
-// };
-function onOpenCvReady() {
-  document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
-  let imgElement = document.getElementById('imageSrc');
-  	const interval = setInterval(function() {
-  		// Copy the <li> element and its child nodes
-		var cln = imgElement.cloneNode(false);
-  		let src = cv.imread(cln);
-  		
-  		// console.log(src.size());
-  		let dst = new cv.Mat();
-		cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
-		cv.imshow('canvasOutput', dst);
-		src.delete(); dst.delete();
+<body>
+  <h1>Pi Video Surveillance</h1>
+  <img id="imageSrc" width="260" height="140" src="http://172.16.3.3:8090/">
+  <canvas id="canvasOutput"></canvas>
+  <p id="status">loading...</p>
+</body>
 
-  		document.getElementById('status').innerHTML = new Date();
- 	}, 1000);
-}
+<script type="text/javascript">
+
+  // let inputElement = document.getElementById('fileInput');
+  // inputElement.addEventListener('change', (e) => {
+  //   imgElement.src = URL.createObjectURL(e.target.files[0]);
+  // }, false);
+  // imgElement.onload = function() {
+  //   let mat = cv.imread(imgElement);
+  //   cv.imshow('canvasOutput', mat);
+  //   mat.delete();
+  // };
+  function onOpenCvReady() {
+    document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+    let imgElement = document.getElementById('imageSrc');
+    const interval = setInterval(function () {
+      // Copy the <li> element and its child nodes
+      var cln = imgElement.cloneNode(false);
+      let src = cv.imread(cln);
+
+      // console.log(src.size());
+      let dst = new cv.Mat();
+      cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+      cv.imshow('canvasOutput', dst);
+      src.delete(); dst.delete();
+
+      document.getElementById('status').innerHTML = new Date();
+    }, 1000);
+  }
 
 </script>
 
-<script src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script> 
+<script src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
 
 </html>
-
-

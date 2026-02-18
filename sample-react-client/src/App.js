@@ -28,12 +28,12 @@ const App = () => {
       <FormDemo /> */}
       <Container>
         <Row md={2}>
-          <Col><Image src="http://localhost:8180" fluid rounded /></Col>
-          <Col><Image src="http://localhost:8180?file=canny.edn" fluid rounded /></Col>
+          <Col><Image src="http://localhost:8090" fluid rounded /></Col>
+          <Col><Image src="http://localhost:8090?file=canny.edn" fluid rounded /></Col>
         </Row>
         <Row md={2}>
-          <Col><Image src="http://localhost:8180/?file=[{:class%20origami.filters.FPS}]" fluid rounded /></Col>
-          <Col><Image src="http://localhost:8180/?file=[{:class%20origami.filters.MyYolo$V2}]" fluid rounded /></Col>
+          <Col><Image src="http://localhost:8090/?file=[{:class%20origami.filters.FPS}]" fluid rounded /></Col>
+          <Col><Image src="http://localhost:8090/?file=[{:class%20origami.filters.MyYolo$V2}]" fluid rounded /></Col>
         </Row>
 
       </Container>
