@@ -118,7 +118,7 @@ public class HttpStreamServer implements Runnable {
                 String query = get.split(" ")[1];
                 System.out.println("Loading filter from:" + query);
                 String[] splits = query.split("=");
-                if (splits.length == 0) {
+                if (splits.length < 2) {
                     System.out.println("No filter requested");
                     return PASSTHROUGH_FILTER;
                 }
@@ -163,7 +163,7 @@ public class HttpStreamServer implements Runnable {
 
 
     public void pushImage(Mat frame) {
-        this.frame = frame;
+        this.frame = frame.clone();
     }
 
     public void run() {
